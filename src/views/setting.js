@@ -3,7 +3,7 @@ import { View, TextInput, ToastAndroid, StyleSheet, Image } from 'react-native'
 import { Actions, ActionConst } from 'react-native-router-flux'
 import { Button, Card, Layout, Text, Avatar, Icon, ListItem, Input } from '@ui-kitten/components'
 
-import storage from '../storage'
+import storage from '../assets/storage'
 import api from '../api'
 export default class Setting extends React.Component {
 

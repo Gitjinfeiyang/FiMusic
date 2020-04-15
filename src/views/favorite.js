@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {View,ScrollView} from 'react-native'
-import storage from '../storage'
+import storage from '../assets/storage'
 import { Button, Card, Layout, Text, Avatar, Icon, ListItem } from '@ui-kitten/components'
 import api from '../api'
 import {Actions} from 'react-native-router-flux'
@@ -77,7 +77,7 @@ export default class Favorite extends React.Component {
   }
 
   toPlaying(index){
-    storage.setPlaylist(this.state.playlistDetail.playlist.tracks)
+    this.props.store.player.updatePlaylist({playlist:this.state.playlistDetail.playlist.tracks,playingIndex:index})
     Actions.playing({index})
   }
 

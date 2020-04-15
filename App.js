@@ -4,8 +4,8 @@ import { Router, Stack, Scene, Actions, Lightbox} from 'react-native-router-flux
 import { ApplicationProvider, IconRegistry,Layout,Icon,Button} from '@ui-kitten/components'
 import * as eva from '@eva-design/eva'
 import { EvaIconsPack } from '@ui-kitten/eva-icons'
-import storage from './src/storage'
-import { Provider,connect } from 'react-redux'
+import storage from './src/assets/storage'
+import store from './src/assets/store'
 
 import Home from './src/views/home'
 import Favorite from './src/views/favorite'
@@ -20,10 +20,10 @@ const instructions = Platform.select({
 
 export default function App() {
   return (
-    <React.Fragment >
+    <React.Fragment>
       <IconRegistry icons={EvaIconsPack} />
       <ApplicationProvider {...eva} theme={eva.light}>
-          <Router>
+          <Router store={store}>
             <Stack key="root">
             <Scene key="landing" component={Landing} hideNavBar={true}></Scene>
             <Scene key="login" component={Login} title="Login" navTransparent={true}></Scene>

@@ -1,10 +1,12 @@
 import * as React from 'react'
 import { View, StyleSheet, TouchableHighlight, ImageBackground, Image, ToastAndroid, ScrollView} from 'react-native'
 import {Actions} from 'react-native-router-flux'
-import storage from '../storage'
+import storage from '../assets/storage'
 import { Button, Card, Layout, Text, Avatar, Icon,ListItem} from '@ui-kitten/components'
 import api from '../api'
+import { observer } from 'mobx-react'
 
+@observer
 export default class Home extends React.Component {
 
   constructor(props){
@@ -109,5 +111,4 @@ const styles = StyleSheet.create({
     width:60,height:60,borderRadius:4
   }
 })
-
 

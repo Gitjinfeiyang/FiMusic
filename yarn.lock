@@ -5267,6 +5267,23 @@ mkdirp@^0.5.1:
   dependencies:
     minimist "^1.2.5"
 
+mobx-react-lite@2:
+  version "2.0.6"
+  resolved "https://registry.npm.taobao.org/mobx-react-lite/download/mobx-react-lite-2.0.6.tgz#e1307a2b271c6a6016c8ad815a25014b7f95997d"
+  integrity sha1-4TB6KyccamAWyK2BWiUBS3+VmX0=
+
+mobx-react@^6.2.2:
+  version "6.2.2"
+  resolved "https://registry.npm.taobao.org/mobx-react/download/mobx-react-6.2.2.tgz#45e8e7c4894cac8399bba0a91060d7cfb8ea084b"
+  integrity sha1-RejnxIlMrIOZu6CpEGDXz7jqCEs=
+  dependencies:
+    mobx-react-lite "2"
+
+mobx@^5.15.4:
+  version "5.15.4"
+  resolved "https://registry.npm.taobao.org/mobx/download/mobx-5.15.4.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fmobx%2Fdownload%2Fmobx-5.15.4.tgz#9da1a84e97ba624622f4e55a0bf3300fb931c2ab"
+  integrity sha1-naGoTpe6YkYi9OVaC/MwD7kxwqs=
+
 morgan@^1.9.0:
   version "1.10.0"
   resolved "https://registry.npm.taobao.org/morgan/download/morgan-1.10.0.tgz?cache=0&sync_timestamp=1584727392857&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fmorgan%2Fdownload%2Fmorgan-1.10.0.tgz#091778abc1fc47cd3509824653dae1faab6b17d7"

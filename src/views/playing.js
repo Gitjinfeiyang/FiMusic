@@ -1,18 +1,20 @@
 import * as React from 'react'
 import { View, ScrollView, ToastAndroid, ImageBackground, StyleSheet, ActivityIndicator,Image } from 'react-native'
-import storage from '../storage'
+import storage from '../assets/storage'
 import { Button, Card, Layout, Text, Avatar, Icon, ListItem,ViewPager,ButtonGroup } from '@ui-kitten/components'
 import api from '../api'
-import player from '../player';
+import player from '../assets/player';
 import utils from '../assets/utils'
+import { observer } from 'mobx-react'
 
+@observer
 export default class Playing extends React.Component {
 
   constructor(props) {
     super(props)
     this.state = {
-      playlist: storage.getPlaylist(),
-      playingIndex: props.index === undefined?storage.getPlaying() : props.index,
+      playlist: props.store.player.playlist,
+      playingIndex: props.index === undefined?props.store.player.playingIndex : props.index,
       currentSongDetail:{},
       currentSongUrl:[{
         url:''
@@ -26,9 +28,7 @@ export default class Playing extends React.Component {
     if(!this.state.playingIndex) return 
     if(props.index !== undefined){
       // 如果设置了index，则需要重新指定播放 否则维持当前状态
-      this.setToPlayer(props.index)
-    }else{
-      this.initStatusCb()
+      this.updatePlaying(props.index)
     }
 
   }
@@ -45,11 +45,7 @@ export default class Playing extends React.Component {
   }
 
   getCurrentSong(){
-    if (this.state.playingIndex === undefined){
-      return null
-    }else{
-      return this.state.playlist[this.state.playingIndex]
-    }
+    return player.getCurrentSong()
   }
 
   handleStatus(playStatus){
@@ -63,76 +59,18 @@ export default class Playing extends React.Component {
     }
   }
 
-  async setToPlayer(index = this.state.playingIndex){
-    storage.setPlaying(index)
-    this.pause()
-    this.setState({isLoading:true,isPlaying:false})
-
-    // 检查歌曲
-    const res = await api.checkSong({id:this.getCurrentSong().id})
-    if(res.data.success){
-      // 获取url
-      const res2 = await api.getSongUrl({id:this.getCurrentSong().id})
-      if(res2.data.code == 200){
-        // 取码率最好的一首
-        this.setState({
-          currentSongUrl:res2.data.data.pop()
-        })
-        try{
-          // 设置到播放器
-          await player.loadAndPlay(this.state.currentSongUrl.url)
-          this.initStatusCb()
-          this.setState({ isLoading: false })
-        }catch(err){
-          ToastAndroid.show(err.message + ' 播放下一首')
-          this.nextSong()
-          this.setState({ isLoading: false })
-        }
-      }else{
-        ToastAndroid.show(res2.data.message + ' 播放下一首')
-        this.nextSong()
-        this.setState({ isLoading: false })
-      }
-    }else{
-      ToastAndroid.show(res.data.message+' 播放下一首')
-      this.nextSong()
-      this.setState({ isLoading: false })
-    }
-  }
-
-  initStatusCb(){
-    player.setCb((playStatus) => {
-      this.handleStatus(playStatus)
-    })
+  async updatePlaying(index = this.state.playingIndex){
+    this.props.store.player.updatePlayingIndex(index)
+    player.loadAndPlay()
   }
 
   // 目前实现的是循环播放
   prevSong(){
-    this.state.playingIndex -= 1
-    if(this.state.playingIndex <0){
-      this.state.playingIndex = this.state.playlist.length-1
-    }
-    storage.setPlaying(this.state.playingIndex)
-    this.setState({
-      playingIndex:this.state.playingIndex
-    })
-    this.getCurrentSong()
-    this.setToPlayer()
-    this.lyric.initLyric()
+    player.prevSong()
   }
 
   nextSong(){
-    this.state.playingIndex += 1
-    if(this.state.playingIndex > (this.state.playlist.length -1)){
-      this.state.playingIndex = 0
-    }
-    storage.setPlaying(this.state.playingIndex)
-    this.setState({
-      playingIndex: this.state.playingIndex
-    })
-    this.getCurrentSong()
-    this.setToPlayer()
-    this.lyric.initLyric()
+    player.nextSong()
   }
 
   _contentViewScroll(e) {
@@ -165,7 +103,7 @@ export default class Playing extends React.Component {
           >
   
             <ImageBackground blurRadius={20} style={styles.image} source={{ uri: currentSong.al.picUrl }} >
-              {currentSong && currentSong.id?<Lyric ref={(el) => this.lyric = el} currentTime={this.state.playStatus.positionMillis} songId={currentSong.id}></Lyric>:null}
+            {currentSong && currentSong.id ? <Lyric ref={(el) => this.lyric = el} currentTime={this.props.store.player.playingStatus.positionMillis} songId={currentSong.id}></Lyric>:null}
             </ImageBackground>
   
 
@@ -176,7 +114,7 @@ export default class Playing extends React.Component {
           <View style={styles.durationOutter}>
             <View style={{
               ...styles.durationInner,
-              width: (this.state.playStatus.positionMillis / this.state.playStatus.durationMillis) * 100 + '%'
+              width: (this.props.store.player.playingStatus.positionMillis / this.props.store.player.playingStatus.durationMillis) * 100 + '%'
             }}></View>
           </View>
           <ListItem
@@ -189,8 +127,8 @@ export default class Playing extends React.Component {
                   <ButtonGroup size="small" appearance='outline' status='info'>
                     <Button onPress={() => this.prevSong()}>Prev</Button>
                     {
-                      this.state.isLoading ? <Button disabled>Loading...</Button> :
-                        (this.state.playStatus.isPlaying ? <Button onPress={() => this.pause()}>Pause</Button> : <Button onPress={() => this.play()}>Play</Button>)
+                      this.props.store.player.playingStatus.isLoaded ? <Button disabled>Loading...</Button> :
+                        (this.props.store.player.playingStatus.isPlaying ? <Button onPress={() => this.pause()}>Pause</Button> : <Button onPress={() => this.play()}>Play</Button>)
                     }
                     <Button onPress={() => this.nextSong()}>Next</Button>
                   </ButtonGroup>
