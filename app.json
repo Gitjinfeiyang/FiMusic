@@ -1,0 +1,22 @@
+{
+  "name": "FiMusic",
+  "displayName": "FiMusic",
+  "expo": {
+    "name": "FiMusic",
+    "slug": "FiMusic",
+    "version": "1.0.0",
+    "icon":"./src/assets/logo.png",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "android": {
+      "package": "com.nbjfy.fimusic",
+      "versionCode": 1
+    }
+  }
+}
