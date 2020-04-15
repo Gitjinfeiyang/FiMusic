@@ -1,6 +1,7 @@
 # FiMusic
 网易云音乐tv版
-#仅供学习交流，请勿用于商业用途
+
+# 仅供学习交流，请勿用于商业用途
 
 ## Setup
 * api 接口来自 https://github.com/Binaryify/NeteaseCloudMusicApi
