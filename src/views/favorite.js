@@ -83,6 +83,7 @@ export default class Favorite extends React.Component {
 
   render(){
     let arNames = ''
+    let currentSong = this.props.store.player.playingIndex?this.props.store.player.playlist[this.props.store.player.playingIndex]:null
     return (
       <ScrollView
         onMomentumScrollEnd={(e) => this._contentViewScroll(e)}>
@@ -91,6 +92,7 @@ export default class Favorite extends React.Component {
           this.state.renderList.map((item,index) => {
             arNames = item && item.ar && item.ar.map(ar => ar.name).join('、') || ''
             return item ? <ListItem
+              style={currentSong && currentSong.id == item.id?{backgroundColor:'#f5f5f5'}:{}}
               key={item.id}
               onPress={() => this.toPlaying(index)}
               title={item.name}
