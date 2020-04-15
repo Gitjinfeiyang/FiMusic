@@ -67,10 +67,18 @@ export default class Playing extends React.Component {
   // 目前实现的是循环播放
   prevSong(){
     player.prevSong()
+    setTimeout(() => {
+      this.lyric.initLyric()
+    })
+
   }
 
   nextSong(){
     player.nextSong()
+    setTimeout(() => {
+      this.lyric.initLyric()
+    })
+
   }
 
   _contentViewScroll(e) {
@@ -95,7 +103,7 @@ export default class Playing extends React.Component {
 
 
   render() {
-    let currentSong = this.getCurrentSong()
+    let currentSong = this.props.store.player.playlist[this.props.store.player.playingIndex]
     return currentSong?(
       <View style={styles.wrapper}>
         <View
@@ -127,7 +135,7 @@ export default class Playing extends React.Component {
                   <ButtonGroup size="small" appearance='outline' status='info'>
                     <Button onPress={() => this.prevSong()}>Prev</Button>
                     {
-                      this.props.store.player.playingStatus.isLoaded ? <Button disabled>Loading...</Button> :
+                      !this.props.store.player.playingStatus.isLoaded ? <Button disabled>Loading...</Button> :
                         (this.props.store.player.playingStatus.isPlaying ? <Button onPress={() => this.pause()}>Pause</Button> : <Button onPress={() => this.play()}>Play</Button>)
                     }
                     <Button onPress={() => this.nextSong()}>Next</Button>

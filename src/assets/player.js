@@ -43,7 +43,7 @@ class Player {
     
   }
   initCb(){
-    this.playbackObject.setOnPlaybackStatusUpdate(function (e) {
+    this.playbackObject.setOnPlaybackStatusUpdate( (e) => {
       // set到全局
       store.player.updatePlayingStatus(e)
       if (e.didJustFinish){
@@ -67,6 +67,7 @@ class Player {
     if (store.player.playingIndex < 0) {
       store.player.playingIndex = store.player.playlist.length - 1
     }
+    store.player.updatePlayingIndex(store.player.playingIndex)
     this.stop()
     this.loadAndPlay()
   }
@@ -76,6 +77,7 @@ class Player {
     if (store.player.playingIndex > (store.player.playlist.length - 1)) {
       store.player.playingIndex = 0
     }
+    store.player.updatePlayingIndex(store.player.playingIndex)
     this.stop()
     this.loadAndPlay()
   }
