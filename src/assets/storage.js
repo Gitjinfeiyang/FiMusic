@@ -14,7 +14,7 @@ const storage = {
   },  
   setItem(key,value,cache=false){
     this.state[key] = value
-    if(cache){
+    if(cache === true){
       _storage.save({
         key,
         data:value

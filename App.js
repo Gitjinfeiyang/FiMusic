@@ -12,6 +12,7 @@ import Favorite from './src/views/favorite'
 import Login from './src/views/login'
 import Landing from './src/views/landing'
 import Playing from './src/views/playing'
+import Setting from './src/views/setting'
 
 const instructions = Platform.select({
   ios: `Press Cmd+R to reload,\nCmd+D or shake for dev menu`,
@@ -19,6 +20,7 @@ const instructions = Platform.select({
 });
 
 export default function App() {
+  store.config.initSetting()
   return (
     <React.Fragment>
       <IconRegistry icons={EvaIconsPack} />
@@ -30,6 +32,7 @@ export default function App() {
             <Scene key="home" component={Home} navTransparent={true}></Scene>
             <Scene key="favorite" component={Favorite} title="Favorite" renderRightButton={PlayingIcon}></Scene>
             <Scene key="playing" component={Playing} navTransparent={true} title=""></Scene>
+            <Scene key="setting" component={Setting} title="设置"></Scene>
             </Stack>
           </Router>
       </ApplicationProvider>

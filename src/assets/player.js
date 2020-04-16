@@ -1,7 +1,7 @@
 import { Audio, Video } from 'expo-av'
 import api from '../api'
 import store from './store'
-
+import {ToastAndroid} from 'react-native'
 
 
 class Player {
@@ -28,12 +28,12 @@ class Player {
             this.playbackObject.playAsync()
           }
         } catch (err) {
-          // ToastAndroid.show(err.message + ' 播放下一首')
-          // this.nextSong()
+          ToastAndroid.show(err.message + ' 播放下一首',ToastAndroid.SHORT)
+          this.nextSong()
         }
       } else {
-        // ToastAndroid.show(res2.data.message + ' 播放下一首')
-        // this.nextSong()
+        ToastAndroid.show(res2.data.message + ' 播放下一首', ToastAndroid.SHORT)
+        this.nextSong()
       }
     }else{
       // 无权限

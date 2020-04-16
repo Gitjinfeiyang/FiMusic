@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { View, ScrollView, ToastAndroid, ImageBackground, StyleSheet, ActivityIndicator,Image } from 'react-native'
+import { View, ScrollView, ToastAndroid, ImageBackground, StyleSheet, ActivityIndicator,Image,TouchableHighlight } from 'react-native'
 import storage from '../assets/storage'
 import { Button, Card, Layout, Text, Avatar, Icon, ListItem,ViewPager,ButtonGroup } from '@ui-kitten/components'
 import api from '../api'
@@ -106,13 +106,13 @@ export default class Playing extends React.Component {
     let currentSong = this.props.store.player.playlist[this.props.store.player.playingIndex]
     return currentSong?(
       <View style={styles.wrapper}>
+        <ImageBackground blurRadius={20} style={styles.image} source={{ uri: currentSong.al.picUrl }} >
+
         <View
           style={styles.scrollView}
           >
   
-            <ImageBackground blurRadius={20} style={styles.image} source={{ uri: currentSong.al.picUrl }} >
             {currentSong && currentSong.id ? <Lyric ref={(el) => this.lyric = el} currentTime={this.props.store.player.playingStatus.positionMillis} songId={currentSong.id}></Lyric>:null}
-            </ImageBackground>
   
 
           {/* <Comment songId={currentSong.id} ref={(el) => this.comment = el }></Comment> */}
@@ -125,27 +125,25 @@ export default class Playing extends React.Component {
               width: (this.props.store.player.playingStatus.positionMillis / this.props.store.player.playingStatus.durationMillis) * 100 + '%'
             }}></View>
           </View>
-          <ListItem
-            title={currentSong.name}
-            description={currentSong.al.name}
-            accessoryLeft={(props) => <Image style={styles.playingImage} source={{ uri: currentSong.al.picUrl}} />}
-            accessoryRight={(props) => {
-              return (
-                <View >
-                  <ButtonGroup size="small" appearance='outline' status='info'>
-                    <Button onPress={() => this.prevSong()}>Prev</Button>
-                    {
-                      !this.props.store.player.playingStatus.isLoaded ? <Button disabled>Loading...</Button> :
-                        (this.props.store.player.playingStatus.isPlaying ? <Button onPress={() => this.pause()}>Pause</Button> : <Button onPress={() => this.play()}>Play</Button>)
-                    }
-                    <Button onPress={() => this.nextSong()}>Next</Button>
-                  </ButtonGroup>
-                </View>
-              )
-            }}
-          />
+          <View style={styles.playingBarInner}>
+              <Image style={styles.playingImage} source={{ uri: currentSong.al.picUrl }} />
+              <View style={styles.playingContent}>
+                <Text style={styles.songName}>{currentSong.name}</Text>
+                <Text style={styles.alName}>{currentSong.al.name}</Text>
+              </View>
+              <View style={styles.playingActions}>
+                <ButtonGroup size="tiny">
+                  <Button onPress={() => this.prevSong()}>Prev</Button>
+                  {
+                    !this.props.store.player.playingStatus.isLoaded ? <Button disabled>Loading...</Button> :
+                      (this.props.store.player.playingStatus.isPlaying ? <Button onPress={() => this.pause()}>Pause</Button> : <Button onPress={() => this.play()}>Play</Button>)
+                  }
+                  <Button onPress={() => this.nextSong()}>Next</Button>
+                </ButtonGroup>
+              </View>
+          </View>
         </View>
-
+        </ImageBackground>
       </View>
     ):null
   }
@@ -302,19 +300,37 @@ const styles = StyleSheet.create({
   },
   durationOutter:{
     height:4,
-    backgroundColor:'#f1f1f1'
+    backgroundColor:'rgba(255,255,255,0.4)'
   },
   durationInner:{
     backgroundColor:'#598BFF',
     height:'100%'
   },
   playingBar:{
-    height:80,
-    backgroundColor:"#fff"
+    height:70,
+    backgroundColor:"rgba(255,255,255,0.4)",
   },
+  playingBarInner:{
+    display:'flex',
+    flexDirection:'row',
+    padding:10
+  },  
   playingImage:{
     width:40,height:40,borderRadius:4
   },
+  playingContent:{
+    flex:1,
+    paddingLeft:10
+  },
+  playingActions:{
+  },
+  songName:{
+    marginBottom:4
+  },
+  alName:{
+    fontSize:12,
+    color:"#ccc"
+  }, 
   lyricWrapper:{
     margin:20,
     marginTop:60

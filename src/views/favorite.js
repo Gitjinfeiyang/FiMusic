@@ -4,7 +4,9 @@ import storage from '../assets/storage'
 import { Button, Card, Layout, Text, Avatar, Icon, ListItem } from '@ui-kitten/components'
 import api from '../api'
 import {Actions} from 'react-native-router-flux'
+import {observer} from 'mobx-react'
 
+@observer
 export default class Favorite extends React.Component {
 
   constructor(props){

@@ -2,7 +2,7 @@ import axios from 'axios'
 import {ToastAndroid } from 'react-native'
 
 let instance = axios.create({
-  baseURL:'http://192.168.0.104:3000',
+  baseURL:'http://10.10.11.55:3000',
   withCredentials:true,
   headers:{
     "Content-Type": "application/json"
@@ -20,6 +20,7 @@ instance.interceptors.request.use(function (config) {
 });
 
 export default {
+  instance,
   // 根据手机号登录
   loginByPhone(params){
     return instance.get('/login/cellphone',{params})

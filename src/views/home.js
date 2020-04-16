@@ -36,7 +36,7 @@ export default class Home extends React.Component {
         playlist:res.data.playlist
       })
     }else{
-      ToastAndroid.show('获取歌单失败')
+      ToastAndroid.show('获取歌单失败',ToastAndroid.SHORT)
     }
   }
 
@@ -52,8 +52,12 @@ export default class Home extends React.Component {
               accessoryRight={(props) =>{ 
                 return (
                   <React.Fragment>
-                    <Button size="tiny" appearance="ghost" onPress={() => Actions.playing()}>Playing</Button>
-                    <Button size="tiny" appearance="ghost" onPress={() => Actions.login()}>Logout</Button>
+                    <TouchableHighlight>
+                      <Button size="tiny" appearance="ghost" onPress={() => Actions.playing()}>Playing</Button>
+                    </TouchableHighlight>
+                    <TouchableHighlight>
+                      <Button size="tiny" appearance="ghost" onPress={() => Actions.login()}>Logout</Button>
+                    </TouchableHighlight>
                   </React.Fragment>
                 )
               }}
@@ -63,6 +67,7 @@ export default class Home extends React.Component {
         {
           this.state.playlist.map(item => {
             return (
+              <TouchableHighlight key={item.id}>
                 <ListItem
                   onPress={() => this.goToTarget(item)}
                   key={item.id}
@@ -70,6 +75,7 @@ export default class Home extends React.Component {
                   accessoryLeft={(props) => <Image style={styles.playlistImage} source={{ uri:item.coverImgUrl }} ></Image>}
                   description={`${item.trackCount}首歌 播放${item.playCount}次`}
                 />
+              </TouchableHighlight>
             )
           })
         }
