@@ -70,7 +70,7 @@ export default class Login extends React.Component {
                 <Button onPress={() => this.login()}>Login</Button>
               </TouchableHighlight>
               <TouchableHighlight>
-                <Button appearance="ghost" size="tiny" onPress={() => Actions.setting()}></Button>
+                <Button appearance="ghost" size="tiny" onPress={() => Actions.setting()}>Setting</Button>
               </TouchableHighlight>
             </View>
         </Card>
