@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     backgroundColor:'#f5f5f5',
     height:"100%"
   },  
-  card:{margin:10,marginTop:50},
+  card:{width:400,alignSelf:'center',marginTop:50},
   button:{
     marginTop:30
   },
