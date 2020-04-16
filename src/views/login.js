@@ -56,9 +56,7 @@ export default class Login extends React.Component {
       <View style={styles.wrapper}>
 
         <Card style={styles.card}>
-          <TouchableHighlight>
-            <Image source={require('../assets/logo.png')} style={styles.bg} onPress={() => Actions.setting()}></Image>
-          </TouchableHighlight>
+            <Image source={require('../assets/logo.png')} style={styles.bg}></Image>
             <View>
               <TouchableHighlight>
                 <Input label="Username" placeholder="Username" value={this.state.form.username} onChangeText={(e) => this.handleUsername(e)} />
@@ -70,6 +68,9 @@ export default class Login extends React.Component {
             <View style={styles.button}>
               <TouchableHighlight>
                 <Button onPress={() => this.login()}>Login</Button>
+              </TouchableHighlight>
+              <TouchableHighlight>
+                <Button appearance="ghost" size="tiny" onPress={() => Actions.setting()}></Button>
               </TouchableHighlight>
             </View>
         </Card>
