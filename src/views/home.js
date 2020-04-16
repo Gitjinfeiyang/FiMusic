@@ -5,6 +5,7 @@ import storage from '../assets/storage'
 import { Button, Card, Layout, Text, Avatar, Icon,ListItem} from '@ui-kitten/components'
 import api from '../api'
 import { observer } from 'mobx-react'
+import SongList from './favorite'
 
 @observer
 export default class Home extends React.Component {
@@ -12,7 +13,8 @@ export default class Home extends React.Component {
   constructor(props){
     super(props)
     this.state = {
-      playlist:[]
+      playlist:[],
+      currentPlaylist:{}
     }
   }
 
@@ -26,7 +28,13 @@ export default class Home extends React.Component {
   }
 
   goToTarget(route){
-    Actions.favorite({playlist:route,title:route.name})
+    this.setState({
+      currentPlaylist:route
+    },() => {
+        this.songlist.getPlaylistDetail()
+    })
+    
+    // Actions.favorite({playlist:route,title:route.name})
   }
 
   async getUserPlaylist(){
@@ -35,6 +43,9 @@ export default class Home extends React.Component {
       this.setState({
         playlist:res.data.playlist
       })
+      if(res.data.playlist.length){
+        this.goToTarget(res.data.playlist[0])
+      }
     }else{
       ToastAndroid.show('获取歌单失败',ToastAndroid.SHORT)
     }
@@ -42,52 +53,70 @@ export default class Home extends React.Component {
 
   render(){
     return this.state.account?(
-      <ScrollView style={styles.pageWrapper}>
-        <ImageBackground style={styles.userBackgroundImage} source={{ uri: this.state.account.profile.backgroundUrl}}>
-          <Card style={styles.headerCard}>
-            <ListItem
-              title={this.state.account.profile.nickname}
-              description='A set of React Native components'
-              accessoryLeft={(props) => <Avatar source={{ uri: this.state.account.profile.avatarUrl }} />}
-              accessoryRight={(props) =>{ 
-                return (
-                  <React.Fragment>
-                    <TouchableHighlight>
-                      <Button size="tiny" appearance="ghost" onPress={() => Actions.playing()}>Playing</Button>
-                    </TouchableHighlight>
-                    <TouchableHighlight>
-                      <Button size="tiny" appearance="ghost" onPress={() => Actions.login()}>Logout</Button>
-                    </TouchableHighlight>
-                  </React.Fragment>
-                )
-              }}
-            />
-          </Card>
-        </ImageBackground>
-        {
-          this.state.playlist.map(item => {
-            return (
-              <TouchableHighlight key={item.id}>
-                <ListItem
-                  onPress={() => this.goToTarget(item)}
-                  key={item.id}
-                  title={item.name}
-                  accessoryLeft={(props) => <Image style={styles.playlistImage} source={{ uri:item.coverImgUrl }} ></Image>}
-                  description={`${item.trackCount}首歌 播放${item.playCount}次`}
-                />
-              </TouchableHighlight>
-            )
-          })
-        }
-      </ScrollView>
+      <View style={styles.container}>
+        <ScrollView style={styles.pageWrapper}>
+          <ImageBackground style={styles.userBackgroundImage} 
+            source={{ uri: this.state.account.profile.backgroundUrl }}
+            blurRadius={10}>
+            <Card style={styles.headerCard}>
+              <ListItem
+                title={this.state.account.profile.nickname}
+                accessoryLeft={(props) => <Avatar source={{ uri: this.state.account.profile.avatarUrl }} />}
+                accessoryRight={(props) => {
+                  return (
+                    <React.Fragment>
+                      {/* <TouchableHighlight>
+                        <Button size="tiny" appearance="ghost" onPress={() => Actions.playing()}>Playing</Button>
+                      </TouchableHighlight> */}
+                      <TouchableHighlight>
+                        <Button size="tiny" appearance="ghost" onPress={() => Actions.login()}>Logout</Button>
+                      </TouchableHighlight>
+                    </React.Fragment>
+                  )
+                }}
+              />
+            </Card>
+          </ImageBackground>
+          {
+            this.state.playlist.map(item => {
+              return (
+                <TouchableHighlight key={item.id}>
+                  <ListItem
+                    style={this.state.currentPlaylist == item?{backgroundColor:'#f1f1f1'}:{}}
+                    onPress={() => this.goToTarget(item)}
+                    key={item.id}
+                    title={item.name}
+                    accessoryLeft={(props) => <Image style={styles.playlistImage} source={{ uri: item.coverImgUrl }} ></Image>}
+                    description={`${item.trackCount}首歌 播放${item.playCount}次`}
+                  />
+                </TouchableHighlight>
+              )
+            })
+          }
+        </ScrollView>
+
+        <View style={styles.rightContent}>
+          <SongList ref={(el) => this.songlist = el} store={this.props.store} playlist={this.state.currentPlaylist}></SongList>
+        </View>
+      </View>
+      
     ):null
   }
 }
 
 const styles = StyleSheet.create({
-  pageWrapper:{
-    backgroundColor:'#f1f1f1'
+  container:{
+    display:'flex',
+    flexDirection:'row'
   },
+  pageWrapper:{
+    flex:1,
+    borderRightColor:'#f1f1f1',
+    borderRightWidth:1
+  },
+  rightContent:{
+    flex:2
+  },  
   actionItem:{
     marginTop:10,
     height:80,
@@ -114,7 +143,7 @@ const styles = StyleSheet.create({
     flex:1,
   },
   playlistImage:{
-    width:60,height:60,borderRadius:4
+    width:40,height:40,borderRadius:4
   }
 })
 

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Platform, StyleSheet, Text, View,SafeAreaView } from 'react-native';
+import { Platform, StyleSheet, Text, View,SafeAreaView,StatusBar } from 'react-native';
 import { Router, Stack, Scene, Actions, Lightbox} from 'react-native-router-flux'
 import { ApplicationProvider, IconRegistry,Layout,Icon,Button} from '@ui-kitten/components'
 import * as eva from '@eva-design/eva'

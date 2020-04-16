@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {View,ScrollView} from 'react-native'
+import {View,ScrollView,ToastAndroid} from 'react-native'
 import storage from '../assets/storage'
 import { Button, Card, Layout, Text, Avatar, Icon, ListItem } from '@ui-kitten/components'
 import api from '../api'
@@ -27,11 +27,11 @@ export default class Favorite extends React.Component {
     this.setState({
       account: storage.getAccount(),
     })
-    this.getPlaylistDetail()
   }
 
   async getPlaylistDetail(){
-    const res = await api.getPlaylistDetail({id:this.state.playlist.id})
+    ToastAndroid.show('Loading playlist...',ToastAndroid.SHORT)
+    const res = await api.getPlaylistDetail({id:this.props.playlist.id})
     if(res.data.code == 200){
       this.setState({
         playlistDetail:res.data
@@ -60,7 +60,8 @@ export default class Favorite extends React.Component {
 
   initPage(){
     this.setState({
-      loadCount: 30
+      loadCount: 30,
+      renderList:[]
     },() => {
       this.refreshPage()
     })

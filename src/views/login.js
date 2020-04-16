@@ -54,9 +54,11 @@ export default class Login extends React.Component {
   render() {
     return (
       <View style={styles.wrapper}>
-        <Image source={require('../assets/logo.png')} style={styles.bg}></Image>
+
         <Card style={styles.card}>
-            <Button appearance="ghost" onPress={() => Actions.setting()}>Setting</Button>
+          <TouchableHighlight>
+            <Image source={require('../assets/logo.png')} style={styles.bg} onPress={() => Actions.setting()}></Image>
+          </TouchableHighlight>
             <View>
               <TouchableHighlight>
                 <Input label="Username" placeholder="Username" value={this.state.form.username} onChangeText={(e) => this.handleUsername(e)} />
@@ -85,5 +87,5 @@ const styles = StyleSheet.create({
   button:{
     marginTop:30
   },
-  bg:{width:100,height:100,alignSelf:'center',marginTop:100,borderRadius:6}
+  bg:{width:40,height:40,alignSelf:'center',borderRadius:6}
 })

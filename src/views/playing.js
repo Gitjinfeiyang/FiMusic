@@ -26,7 +26,7 @@ export default class Playing extends React.Component {
       isLoading:true
     }
     if(!this.state.playingIndex) return 
-    if(props.index !== undefined){
+    if(props.index !== undefined && props.index != props.store.player.playingIndex){
       // 如果设置了index，则需要重新指定播放 否则维持当前状态
       this.updatePlaying(props.index)
     }
@@ -106,7 +106,7 @@ export default class Playing extends React.Component {
     let currentSong = this.props.store.player.playlist[this.props.store.player.playingIndex]
     return currentSong?(
       <View style={styles.wrapper}>
-        <ImageBackground blurRadius={20} style={styles.image} source={{ uri: currentSong.al.picUrl }} >
+        <ImageBackground blurRadius={10} style={styles.image} source={{ uri: currentSong.al.picUrl }} >
 
         <View
           style={styles.scrollView}
