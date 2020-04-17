@@ -51,7 +51,6 @@ class Player {
     this.playbackObject.setOnPlaybackStatusUpdate( (e) => {
       // set到全局
       this.throttle(() => {
-        console.log('throttle')
         store.player.updatePlayingStatus(e)
         if (e.didJustFinish){
           this.nextSong()

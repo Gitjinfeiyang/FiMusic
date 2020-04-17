@@ -127,13 +127,22 @@ export default class Playing extends React.Component {
     let currentSong = this.props.store.player.playlist[this.props.store.player.playingIndex]
     return currentSong?(
       <View style={styles.wrapper}>
-        <ImageBackground blurRadius={10} style={styles.image} source={{ uri: currentSong.al.picUrl + '?param=80y80' }} >
+        <ImageBackground 
+          resizeMethod="scale" 
+          blurRadius={10} 
+          style={styles.image} 
+          source={{ uri: currentSong.al.picUrl + '?param=80y80' }} >
 
         <View
           style={styles.scrollView}
           >
   
-            {currentSong && currentSong.id ? <Lyric ref={(el) => this.lyric = el} currentTime={this.props.store.player.playingStatus.positionMillis} songId={currentSong.id}></Lyric>:null}
+            {currentSong && currentSong.id ? 
+              <Lyric 
+              ref={(el) => this.lyric = el} 
+              currentTime={this.props.store.player.playingStatus.positionMillis} 
+              songId={currentSong.id}></Lyric>
+              :null}
   
 
           {/* <Comment songId={currentSong.id} ref={(el) => this.comment = el }></Comment> */}
@@ -147,7 +156,9 @@ export default class Playing extends React.Component {
             }}></View>
           </View>
           <View style={styles.playingBarInner}>
-              <Image style={styles.playingImage} source={{ uri: currentSong.al.picUrl + '?param=80y80' }} />
+              <Image resizeMethod="scale" 
+                style={styles.playingImage} 
+                source={{ uri: currentSong.al.picUrl + '?param=80y80' }} />
               <View style={styles.playingContent}>
                 <Text style={styles.songName}>{currentSong.name}</Text>
                 <Text style={styles.alName}>{currentSong.al.name}</Text>
