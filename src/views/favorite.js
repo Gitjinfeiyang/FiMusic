@@ -91,6 +91,7 @@ export default class Favorite extends React.Component {
     return (
       this.state.renderList.length?<FlatList
         onEndReached={() => this.nextPage()}
+        onEndReachedThreshold={0.5}
         data={this.state.renderList}
         renderItem={({item,index}) => {
         return <ListItem
