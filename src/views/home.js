@@ -58,7 +58,7 @@ export default class Home extends React.Component {
       <View style={styles.container}>
         <ScrollView style={styles.pageWrapper}>
           <ImageBackground style={styles.userBackgroundImage} 
-            source={{ uri: this.state.account.profile.backgroundUrl }}
+            source={{ uri: this.state.account.profile.backgroundUrl+'?param=200y200' }}
             blurRadius={10}>
             <Card style={styles.headerCard}>
               <ListItem
@@ -88,7 +88,7 @@ export default class Home extends React.Component {
                     onPress={() => this.goToTarget(item)}
                     key={item.id}
                     title={item.name}
-                    accessoryLeft={(props) => <Image style={styles.playlistImage} source={{ uri: item.coverImgUrl }} ></Image>}
+                    accessoryLeft={(props) => <Image style={styles.playlistImage} source={{ uri: item.coverImgUrl+'?param=80y80' }} ></Image>}
                     description={`${item.trackCount}首歌 播放${item.playCount}次`}
                   />
                 </TouchableNativeFeedback>

@@ -127,7 +127,7 @@ export default class Playing extends React.Component {
     let currentSong = this.props.store.player.playlist[this.props.store.player.playingIndex]
     return currentSong?(
       <View style={styles.wrapper}>
-        <ImageBackground blurRadius={10} style={styles.image} source={{ uri: currentSong.al.picUrl }} >
+        <ImageBackground blurRadius={10} style={styles.image} source={{ uri: currentSong.al.picUrl + '?param=80y80' }} >
 
         <View
           style={styles.scrollView}
@@ -147,7 +147,7 @@ export default class Playing extends React.Component {
             }}></View>
           </View>
           <View style={styles.playingBarInner}>
-              <Image style={styles.playingImage} source={{ uri: currentSong.al.picUrl }} />
+              <Image style={styles.playingImage} source={{ uri: currentSong.al.picUrl + '?param=80y80' }} />
               <View style={styles.playingContent}>
                 <Text style={styles.songName}>{currentSong.name}</Text>
                 <Text style={styles.alName}>{currentSong.al.name}</Text>
