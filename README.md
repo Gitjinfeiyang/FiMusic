@@ -16,3 +16,7 @@
 * ~~添加接口地址设置~~
 * 私人fm
 * 搜索
+
+# Sceenshots
+![sceenshots](./sceenshots/home.jpeg)
+![sceenshots](./sceenshots/playing.jpeg)
