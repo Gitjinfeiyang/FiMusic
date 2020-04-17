@@ -12,18 +12,27 @@ class Player {
   }
 
   async loadAndPlay(){
-    this.playbackObject.unloadAsync()
+    try{
+      await this.playbackObject.unloadAsync()
+    }catch(err){
 
+    }
     // 检查歌曲
-    const res = await api.checkSong({ id: this.getCurrentSong().id })
-    if(res.data.success){
+    // const res = await api.checkSong({ id: this.getCurrentSong().id })
+    // if(res.data.success){
       // 获取url
+
       const res2 = await api.getSongUrl({ id: store.player.playlist[store.player.playingIndex].id })
       if (res2.data.code == 200) {
         // 取码率最好的一首
           let currentSongUrl = res2.data.data.pop()
+          if(!currentSongUrl || !currentSongUrl.url){
+            this.nextSong()
+            return 
+          }
         try {
           // 设置到播放器
+          console.log('play ' + store.player.playlist[store.player.playingIndex].name+currentSongUrl.url)
           const res1 = await this.playbackObject.loadAsync({ uri: currentSongUrl.url })
           if (res1.isLoaded) {
             this.playbackObject.playAsync()
@@ -40,10 +49,10 @@ class Player {
         ToastAndroid.show(res2.data.message + ' 播放下一首', ToastAndroid.SHORT)
         this.nextSong()
       }
-    }else{
-      // 无权限
-      // this.nextSong()
-    }
+    // }else{
+    //   // 无权限
+    //   // this.nextSong()
+    // }
 
     
   }
@@ -52,10 +61,11 @@ class Player {
       // set到全局
       this.throttle(() => {
         store.player.updatePlayingStatus(e)
-        if (e.didJustFinish){
-          this.nextSong()
-        }
       })
+      if (e.didJustFinish){
+        store.player.updatePlayingStatus(e)
+        this.nextSong()
+      }
     })
   }
   pause(){

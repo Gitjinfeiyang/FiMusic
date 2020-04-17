@@ -71,9 +71,7 @@ export default class Home extends React.Component {
                       {/* <TouchableNativeFeedback>
                         <Button size="tiny" appearance="ghost" onPress={() => Actions.playing()}>Playing</Button>
                       </TouchableNativeFeedback> */}
-                      <TouchableNativeFeedback>
                         <Button size="tiny" appearance="ghost" onPress={() => Actions.login()}>Logout</Button>
-                      </TouchableNativeFeedback>
                     </React.Fragment>
                   )
                 }}
@@ -83,8 +81,8 @@ export default class Home extends React.Component {
           {
             this.state.playlist.map(item => {
               return (
-                <TouchableNativeFeedback key={item.id}>
                   <ListItem
+                    focusable
                     style={this.state.currentPlaylist == item?{backgroundColor:'#f1f1f1'}:{}}
                     onPress={() => this.goToTarget(item)}
                     key={item.id}
@@ -92,7 +90,6 @@ export default class Home extends React.Component {
                     accessoryLeft={(props) => <Image resizeMethod="scale" style={styles.playlistImage} source={{ uri: item.coverImgUrl+'?param=80y80' }} ></Image>}
                     description={`${item.trackCount}首歌 播放${item.playCount}次`}
                   />
-                </TouchableNativeFeedback>
               )
             })
           }

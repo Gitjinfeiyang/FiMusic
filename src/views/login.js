@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { View, TextInput, ToastAndroid,StyleSheet,Image,TouchableHighlight} from 'react-native'
+import { View, TextInput, ToastAndroid,StyleSheet,Image,TouchableHighlight, Button as RNButton} from 'react-native'
 import { Actions } from 'react-native-router-flux'
 import { Button, Card, Layout, Text, Avatar, Icon, ListItem,Input } from '@ui-kitten/components'
 
@@ -57,21 +57,14 @@ export default class Login extends React.Component {
 
         <Card style={styles.card}>
             <Image source={require('../assets/logo.png')} style={styles.bg}></Image>
-            <View>
-              <TouchableHighlight>
+            <View focusable>
                 <Input label="Username" placeholder="Username" value={this.state.form.username} onChangeText={(e) => this.handleUsername(e)} />
-              </TouchableHighlight>
-              <TouchableHighlight>
                 <Input label="Password" placeholder="Password" value={this.state.form.password} onChangeText={(e) => this.handlePassword(e)} />
-              </TouchableHighlight>
             </View>
             <View style={styles.button}>
-              <TouchableHighlight>
                 <Button onPress={() => this.login()}>Login</Button>
-              </TouchableHighlight>
-              <TouchableHighlight>
                 <Button appearance="ghost" size="tiny" onPress={() => Actions.setting()}>Setting</Button>
-              </TouchableHighlight>
+              <RNButton title="For Test"></RNButton>
             </View>
         </Card>
       </View>

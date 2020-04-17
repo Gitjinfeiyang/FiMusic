@@ -1,12 +1,12 @@
 import * as React from 'react'
-import { View, ScrollView, ToastAndroid, ImageBackground, StyleSheet, ActivityIndicator,Image,TouchableHighlight } from 'react-native'
+import { View, ScrollView, ToastAndroid, ImageBackground, StyleSheet, ActivityIndicator, Image, TouchableHighlight } from 'react-native'
 import storage from '../assets/storage'
-import { Button, Card, Layout, Text, Avatar, Icon, ListItem,ViewPager,ButtonGroup } from '@ui-kitten/components'
+import { Button, Card, Layout, Text, Avatar, Icon, ListItem, ViewPager, ButtonGroup } from '@ui-kitten/components'
 import api from '../api'
 import player from '../assets/player';
 import utils from '../assets/utils'
 import { observer } from 'mobx-react'
-import { autorun,reaction} from 'mobx'
+import { autorun, reaction } from 'mobx'
 
 @observer
 export default class Playing extends React.Component {
@@ -14,19 +14,19 @@ export default class Playing extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      playingIndex: props.index === undefined?props.store.player.playingIndex : props.index,
-      currentSongDetail:{},
-      currentSongUrl:[{
-        url:''
+      playingIndex: props.index === undefined ? props.store.player.playingIndex : props.index,
+      currentSongDetail: {},
+      currentSongUrl: [{
+        url: ''
       }],
-      playStatus:{
-        isMuted:false,
-        isPlaying:false
+      playStatus: {
+        isMuted: false,
+        isPlaying: false
       },
-      isLoading:true
+      isLoading: true
     }
-    if(!this.state.playingIndex) return 
-    if(props.index !== undefined){
+    if (!this.state.playingIndex) return
+    if (props.index !== undefined) {
       // 如果设置了index，则需要重新指定播放 否则维持当前状态
       this.updatePlaying(props.index)
     }
@@ -34,70 +34,70 @@ export default class Playing extends React.Component {
   }
 
   componentDidMount() {
-    this.playingIndexReaction = reaction(() => this.props.store.player.playingIndex,() => {
+    this.playingIndexReaction = reaction(() => this.props.store.player.playingIndex, () => {
       // 如果正在播放曲目变化，重新请求当前曲目信息
       // why?
       setTimeout(() => {
         this.refreshLyric()
       })
     })
-    
-    this.playPositionReaction = reaction(() => this.props.store.player.playingStatus,(index) => {
+
+    this.playPositionReaction = reaction(() => this.props.store.player.playingStatus, (index) => {
       this.refreshLyricScroll()
     })
   }
 
-  componentWillUnmount(){
-      try{
-        this.playingIndexReaction()
-        this.playPositionReaction()
-      }catch(err){
-        console.log(err)
-      }
+  componentWillUnmount() {
+    try {
+      this.playingIndexReaction()
+      this.playPositionReaction()
+    } catch (err) {
+      console.log(err)
+    }
   }
 
-  refreshLyric(){
+  refreshLyric() {
     this.lyric.initLyric()
   }
 
-  refreshLyricScroll(){
+  refreshLyricScroll() {
     this.lyric.initLyricScroll()
   }
 
-  onBuffer(e){
+  onBuffer(e) {
 
   }
 
-  videoError(e){
+  videoError(e) {
 
   }
 
-  getCurrentSong(){
+  getCurrentSong() {
     return player.getCurrentSong()
   }
 
-  handleStatus(playStatus){
-    if(!playStatus || !playStatus.uri) return 
+  handleStatus(playStatus) {
+    if (!playStatus || !playStatus.uri) return
     this.setState({
       playStatus
     })
-    if (playStatus.didJustFinish){
+    if (playStatus.didJustFinish) {
       // 播放到底了，下一首
       this.nextSong()
     }
   }
 
-  async updatePlaying(index = this.state.playingIndex){
+  async updatePlaying(index = this.state.playingIndex) {
     this.props.store.player.updatePlayingIndex(index)
     player.loadAndPlay()
   }
 
   // 目前实现的是循环播放
-  prevSong(){
+  prevSong() {
     player.prevSong()
   }
 
-  nextSong(){
+  nextSong() {
     player.nextSong()
   }
 
@@ -111,11 +111,11 @@ export default class Playing extends React.Component {
     }
   }
 
-  pause(){
+  pause() {
     player.pause()
   }
 
-  play(){
+  play() {
     player.play()
   }
 
@@ -124,39 +124,39 @@ export default class Playing extends React.Component {
 
   render() {
     let currentSong = this.props.store.player.playlist[this.props.store.player.playingIndex]
-    return currentSong?(
+    return currentSong ? (
       <View style={styles.wrapper}>
-        <ImageBackground 
-          resizeMethod="scale" 
-          blurRadius={10} 
-          style={styles.image} 
+        <ImageBackground
+          resizeMethod="scale"
+          blurRadius={10}
+          style={styles.image}
           source={{ uri: currentSong.al.picUrl + '?param=80y80' }} >
 
-        <View
-          style={styles.scrollView}
+          <View
+            style={styles.scrollView}
           >
-  
-            {currentSong && currentSong.id ? 
-              <Lyric 
-              ref={(el) => this.lyric = el} 
-              currentTime={this.props.store.player.playingStatus.positionMillis} 
-              songId={currentSong.id}></Lyric>
-              :null}
-  
 
-          {/* <Comment songId={currentSong.id} ref={(el) => this.comment = el }></Comment> */}
-        </View>
+            {currentSong && currentSong.id ?
+              <Lyric
+                ref={(el) => this.lyric = el}
+                currentTime={this.props.store.player.playingStatus.positionMillis}
+                songId={currentSong.id}></Lyric>
+              : null}
 
-        <View style={styles.playingBar}>
-          <View style={styles.durationOutter}>
-            <View style={{
-              ...styles.durationInner,
-              width: (this.props.store.player.playingStatus.positionMillis / this.props.store.player.playingStatus.durationMillis) * 100 + '%'
-            }}></View>
+
+            {/* <Comment songId={currentSong.id} ref={(el) => this.comment = el }></Comment> */}
           </View>
-          <View style={styles.playingBarInner}>
-              <Image resizeMethod="scale" 
-                style={styles.playingImage} 
+
+          <View style={styles.playingBar}>
+            <View style={styles.durationOutter}>
+              <View style={{
+                ...styles.durationInner,
+                width: (this.props.store.player.playingStatus.positionMillis / this.props.store.player.playingStatus.durationMillis) * 100 + '%'
+              }}></View>
+            </View>
+            <View style={styles.playingBarInner}>
+              <Image resizeMethod="scale"
+                style={styles.playingImage}
                 source={{ uri: currentSong.al.picUrl + '?param=80y80' }} />
               <View style={styles.playingContent}>
                 <Text style={styles.songName}>{currentSong.name}</Text>
@@ -172,61 +172,61 @@ export default class Playing extends React.Component {
                   <Button onPress={() => this.nextSong()}>Next</Button>
                 </ButtonGroup>
               </View>
+            </View>
           </View>
-        </View>
         </ImageBackground>
       </View>
-    ):null
+    ) : null
   }
 }
 
 // 评论 暂时隐藏
 class Comment extends React.Component {
-  constructor(props){
+  constructor(props) {
     super(props)
     this.state = {
-      comments:{
-        hotComments:[],
-        comments:[],
-        more:true
+      comments: {
+        hotComments: [],
+        comments: [],
+        more: true
       },
-      limit:30,
-      offset:0,
-      songId:props.songId
+      limit: 30,
+      offset: 0,
+      songId: props.songId
     }
   }
 
-  componentDidMount(){
+  componentDidMount() {
     this.initList()
   }
 
-  async getList(){
-    const res = await api.getSongComment({id:this.state.songId,limig:this.state.limit,offset:this.state.offset})
-    if(res.data.code == 200){
-      if(res.data.hotComments){
+  async getList() {
+    const res = await api.getSongComment({ id: this.state.songId, limig: this.state.limit, offset: this.state.offset })
+    if (res.data.code == 200) {
+      if (res.data.hotComments) {
         this.state.comments.hotComments = res.data.hotComments
       }
       this.state.comments.comments = res.data.comments
       this.state.comments.more = res.data.more
       this.setState({
-        comments:this.state.comments
+        comments: this.state.comments
       })
     }
   }
 
-  nextPage(){
+  nextPage() {
     this.state.offset += this.state.limit
     this.setState({
-      offset:this.state.offset
+      offset: this.state.offset
     })
     this.getList()
   }
 
-  initList(){
+  initList() {
     this.getList()
   }
 
-  render(){
+  render() {
     return (
       <ScrollView>
         {
@@ -238,7 +238,7 @@ class Comment extends React.Component {
               accessoryLeft={(props) => <Avatar source={{ uri: item.user.avatarUrl }} />}
             />
           })
-          
+
         }
         {
           this.state.comments.comments.map(item => {
@@ -257,71 +257,76 @@ class Comment extends React.Component {
 
 // 歌词
 class Lyric extends React.Component {
-  constructor(props){
+  constructor(props) {
     super(props)
     this.state = {
-      lyricObj:{
-        ms:[]
-      }
+      lyricObj: {
+        ms: []
+      },
+      lyricIndex: 0
     }
     this.initLyric()
   }
 
-  async initLyric(){
-    try{
-      const res = await api.getSongLyric({id:this.props.songId})
-      if(res.data.code == 200){
+  async initLyric() {
+    try {
+      const res = await api.getSongLyric({ id: this.props.songId })
+      if (res.data.code == 200) {
         this.setState({
-          lyricObj:utils.createLrcObj(res.data.lrc.lyric)
-        },() => {
+          lyricObj: utils.createLrcObj(res.data.lrc.lyric),
+          currentIndex: 0
+        }, () => {
           this.initLyricScroll()
         })
       }
-    }catch(err){
+    } catch (err) {
       console.log(err)
     }
   }
 
-  initLyricScroll(){
+  initLyricScroll() {
     if (this.props.currentTime === undefined || this.props.currentTime === undefined) {
 
     } else {
       let next = null
-      this.state.lyricObj.ms.forEach((item,index) => {
-        next = this.state.lyricObj.ms[index + 1]
+      let arr = this.state.lyricObj.ms
+      for (let i = this.state.currentIndex; i < arr.length; i++) {
+        next = arr[i + 1]
         if (next) {
-          if (this.props.currentTime >= item.t && this.props.currentTime < next.t) {
-            this.scrollTo(index)
+          if (this.props.currentTime >= arr[i].t && this.props.currentTime < next.t) {
+            this.scrollTo(i)
+            break
           }
         } else {
-          if (this.props.currentTime >= item.t) {
-            this.scrollTo(index)
+          if (this.props.currentTime >= arr[i].t) {
+            this.scrollTo(i)
+            break
           }
         }
-      })
+      }
     }
   }
-  
-  componentDidMount(){
+
+  componentDidMount() {
   }
 
-  scrollTo(position){
+  scrollTo(position) {
     this.setState({
       currentIndex: position
     })
-    this.scrollView.scrollTo({ y: position*40 -100, animated: true })
+    this.scrollView.scrollTo({ y: position * 40 - 100, animated: true })
   }
 
-  render(){
+  render() {
     return <ScrollView ref={(el) => this.scrollView = el}>
       <View style={styles.lyricWrapper} >
         {
-          this.state.lyricObj.ms.map((item,index) => {
+          this.state.lyricObj.ms.map((item, index) => {
             let activeStyle = {}
-            if(this.state.currentIndex === index){
+            if (this.state.currentIndex === index) {
               activeStyle = styles.activeLyricText
             }
-            return <Text key={index} style={{...styles.lyricText,...activeStyle}}>{item.c}</Text>
+            return <Text key={index} style={{ ...styles.lyricText, ...activeStyle }}>{item.c}</Text>
           })
         }
       </View>
@@ -330,64 +335,64 @@ class Lyric extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  wrapper:{
-    height:"100%",
-    display:'flex',
-    flexDirection:'column'
-  },  
-  scrollView:{
-    flex:1
-  },  
-  image:{
-    height:"100%"
+  wrapper: {
+    height: "100%",
+    display: 'flex',
+    flexDirection: 'column'
   },
-  durationOutter:{
-    height:4,
-    backgroundColor:'rgba(255,255,255,0.4)'
+  scrollView: {
+    flex: 1
   },
-  durationInner:{
-    backgroundColor:'#598BFF',
-    height:'100%'
+  image: {
+    height: "100%"
   },
-  playingBar:{
-    height:70,
-    backgroundColor:"rgba(255,255,255,0.4)",
+  durationOutter: {
+    height: 4,
+    backgroundColor: 'rgba(255,255,255,0.4)'
   },
-  playingBarInner:{
-    display:'flex',
-    flexDirection:'row',
-    padding:10
-  },  
-  playingImage:{
-    width:40,height:40,borderRadius:4
+  durationInner: {
+    backgroundColor: '#598BFF',
+    height: '100%'
   },
-  playingContent:{
-    flex:1,
-    paddingLeft:10
+  playingBar: {
+    height: 70,
+    backgroundColor: "rgba(255,255,255,0.4)",
   },
-  playingActions:{
+  playingBarInner: {
+    display: 'flex',
+    flexDirection: 'row',
+    padding: 10
   },
-  songName:{
-    marginBottom:4
+  playingImage: {
+    width: 40, height: 40, borderRadius: 4
   },
-  alName:{
-    fontSize:12,
-    color:"#ccc"
-  }, 
-  lyricWrapper:{
-    margin:20,
-    marginTop:60
+  playingContent: {
+    flex: 1,
+    paddingLeft: 10
   },
-  lyricText:{
-    fontSize:22,
-    textShadowRadius:10,
-    textShadowColor:'rgba(0,0,0,0.6)',
-    color:"rgba(255,255,255,0.6)",
-    marginBottom:15
+  playingActions: {
   },
-  activeLyricText:{
-    fontSize:26,
-    fontWeight:"bold",
-    color:"#fff"
+  songName: {
+    marginBottom: 4
+  },
+  alName: {
+    fontSize: 12,
+    color: "#ccc"
+  },
+  lyricWrapper: {
+    margin: 20,
+    marginTop: 60
+  },
+  lyricText: {
+    fontSize: 22,
+    textShadowRadius: 10,
+    textShadowColor: 'rgba(0,0,0,0.6)',
+    color: "rgba(255,255,255,0.6)",
+    marginBottom: 15
+  },
+  activeLyricText: {
+    fontSize: 26,
+    fontWeight: "bold",
+    color: "#fff"
   }
 })

@@ -95,6 +95,7 @@ export default class Favorite extends React.Component {
         data={this.state.renderList}
         renderItem={({item,index}) => {
         return <ListItem
+          focusable
           style={currentSong && currentSong.id == item.id ? { backgroundColor: '#f5f5f5' } : {}}
           key={item.id}
           onPress={() => this.toPlaying(index)}
