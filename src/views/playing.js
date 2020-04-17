@@ -6,6 +6,7 @@ import api from '../api'
 import player from '../assets/player';
 import utils from '../assets/utils'
 import { observer } from 'mobx-react'
+import { autorun,reaction} from 'mobx'
 
 @observer
 export default class Playing extends React.Component {
@@ -26,7 +27,7 @@ export default class Playing extends React.Component {
       isLoading:true
     }
     if(!this.state.playingIndex) return 
-    if(props.index !== undefined && props.index != props.store.player.playingIndex){
+    if(props.index !== undefined){
       // 如果设置了index，则需要重新指定播放 否则维持当前状态
       this.updatePlaying(props.index)
     }
@@ -34,6 +35,34 @@ export default class Playing extends React.Component {
   }
 
   componentDidMount() {
+    this.playingIndexReaction = reaction(() => this.props.store.player.playingIndex,() => {
+      // 如果正在播放曲目变化，重新请求当前曲目信息
+      // why?
+      setTimeout(() => {
+        this.refreshLyric()
+      })
+    })
+    
+    this.playPositionReaction = reaction(() => this.props.store.player.playingStatus,(index) => {
+      this.refreshLyricScroll()
+    })
+  }
+
+  componentWillUnmount(){
+      try{
+        this.playingIndexReaction()
+        this.playPositionReaction()
+      }catch(err){
+        console.log(err)
+      }
+  }
+
+  refreshLyric(){
+    this.lyric.initLyric()
+  }
+
+  refreshLyricScroll(){
+    this.lyric.initLyricScroll()
   }
 
   onBuffer(e){
@@ -67,18 +96,10 @@ export default class Playing extends React.Component {
   // 目前实现的是循环播放
   prevSong(){
     player.prevSong()
-    setTimeout(() => {
-      this.lyric.initLyric()
-    })
-
   }
 
   nextSong(){
     player.nextSong()
-    setTimeout(() => {
-      this.lyric.initLyric()
-    })
-
   }
 
   _contentViewScroll(e) {
@@ -149,7 +170,7 @@ export default class Playing extends React.Component {
   }
 }
 
-// 评论
+// 评论 暂时隐藏
 class Comment extends React.Component {
   constructor(props){
     super(props)
@@ -242,10 +263,32 @@ class Lyric extends React.Component {
       if(res.data.code == 200){
         this.setState({
           lyricObj:utils.createLrcObj(res.data.lrc.lyric)
+        },() => {
+          this.initLyricScroll()
         })
       }
     }catch(err){
       console.log(err)
+    }
+  }
+
+  initLyricScroll(){
+    if (this.props.currentTime === undefined || this.props.currentTime === undefined) {
+
+    } else {
+      let next = null
+      this.state.lyricObj.ms.forEach((item,index) => {
+        next = this.state.lyricObj.ms[index + 1]
+        if (next) {
+          if (this.props.currentTime >= item.t && this.props.currentTime < next.t) {
+            this.scrollTo(index)
+          }
+        } else {
+          if (this.props.currentTime >= item.t) {
+            this.scrollTo(index)
+          }
+        }
+      })
     }
   }
   
@@ -253,6 +296,9 @@ class Lyric extends React.Component {
   }
 
   scrollTo(position){
+    this.setState({
+      currentIndex: position
+    })
     this.scrollView.scrollTo({ y: position*40 -100, animated: true })
   }
 
@@ -261,24 +307,11 @@ class Lyric extends React.Component {
       <View style={styles.lyricWrapper} >
         {
           this.state.lyricObj.ms.map((item,index) => {
-            let next = this.state.lyricObj.ms[index+1]
             let activeStyle = {}
-            if (this.props.currentTime === undefined || this.props.currentTime === undefined){
-
-            }else{
-              if(next){
-                if (this.props.currentTime >= item.t && this.props.currentTime < next.t){
-                  activeStyle = styles.activeLyricText
-                  this.scrollTo(index)
-                }
-              }else{
-                if (this.props.currentTime >= item.t){
-                  activeStyle = styles.activeLyricText
-                  this.scrollTo(index)
-                }
-              }
+            if(this.state.currentIndex === index){
+              activeStyle = styles.activeLyricText
             }
-            return <Text style={{...styles.lyricText,...activeStyle}}>{item.c}</Text>
+            return <Text key={index} style={{...styles.lyricText,...activeStyle}}>{item.c}</Text>
           })
         }
       </View>
