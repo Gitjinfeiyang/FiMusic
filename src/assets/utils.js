@@ -56,6 +56,25 @@ function createLrcObj(lrc) {
 }
 
 
+/**
+ * 函数节流
+ * @param fn 回调函数
+ * @param gapTime 间隔时间，默认1s
+ */
+const getThrottle = (gapTime = 1000) => {
+  let _lastTime = null
+
+  return (fn) => {
+    let _nowTime = + new Date()
+    if (_nowTime - _lastTime > gapTime || !_lastTime) {
+      fn.apply(this, arguments)
+      _lastTime = _nowTime
+    }
+  }
+}
+
+
 export default{
-  createLrcObj
+  createLrcObj,
+  getThrottle
 }

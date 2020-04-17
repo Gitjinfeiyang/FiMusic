@@ -2,12 +2,13 @@ import { Audio, Video } from 'expo-av'
 import api from '../api'
 import store from './store'
 import {ToastAndroid} from 'react-native'
-
+import utils from './utils'
 
 class Player {
   constructor(){
     this.playbackObject = new Audio.Sound()
     this.initCb()
+    this.throttle = utils.getThrottle(1000)
   }
 
   async loadAndPlay(){
@@ -28,8 +29,12 @@ class Player {
             this.playbackObject.playAsync()
           }
         } catch (err) {
-          ToastAndroid.show(err.message + ' 播放下一首',ToastAndroid.SHORT)
-          this.nextSong()
+          if (err.message.match('The Sound is already loading')){
+            this.playbackObject.playAsync()
+          }else{
+            ToastAndroid.show(err.message + ' 播放下一首',ToastAndroid.SHORT)
+            this.nextSong()
+          }
         }
       } else {
         ToastAndroid.show(res2.data.message + ' 播放下一首', ToastAndroid.SHORT)
@@ -45,10 +50,13 @@ class Player {
   initCb(){
     this.playbackObject.setOnPlaybackStatusUpdate( (e) => {
       // set到全局
-      store.player.updatePlayingStatus(e)
-      if (e.didJustFinish){
-        this.nextSong()
-      }
+      this.throttle(() => {
+        console.log('throttle')
+        store.player.updatePlayingStatus(e)
+        if (e.didJustFinish){
+          this.nextSong()
+        }
+      })
     })
   }
   pause(){

@@ -34,7 +34,13 @@ export default class Favorite extends React.Component {
     const res = await api.getPlaylistDetail({id:this.props.playlist.id})
     if(res.data.code == 200){
       this.setState({
-        playlistDetail:res.data
+        playlistDetail:{
+          playlist:{
+            tracks: res.data.playlist.tracks.map(item => { 
+              return { ar: item.ar, id: item.id, name: item.name, al: item.al}
+             })
+          }
+        }
       },() => {
         this.initPage()
       })

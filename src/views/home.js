@@ -41,7 +41,9 @@ export default class Home extends React.Component {
     const res = await api.getUserPlaylist({uid:this.state.account.account.id})
     if(res.data.code == 200){
       this.setState({
-        playlist:res.data.playlist
+        playlist: res.data.playlist.map((item) => {
+          return { id:item.id, playCount:item.playCount, trackCount:item.trackCount, id:item.id, name:item.name, coverImgUrl:item.coverImgUrl }
+        })
       })
       if(res.data.playlist.length){
         this.goToTarget(res.data.playlist[0])
