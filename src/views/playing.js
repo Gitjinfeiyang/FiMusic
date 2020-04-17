@@ -14,7 +14,6 @@ export default class Playing extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      playlist: props.store.player.playlist,
       playingIndex: props.index === undefined?props.store.player.playingIndex : props.index,
       currentSongDetail:{},
       currentSongUrl:[{

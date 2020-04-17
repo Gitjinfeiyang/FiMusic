@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {View,ScrollView,ToastAndroid} from 'react-native'
+import {View,FlatList,ToastAndroid} from 'react-native'
 import storage from '../assets/storage'
 import { Button, Card, Layout, Text, Avatar, Icon, ListItem } from '@ui-kitten/components'
 import api from '../api'
@@ -33,25 +33,21 @@ export default class Favorite extends React.Component {
     ToastAndroid.show('Loading playlist...',ToastAndroid.SHORT)
     const res = await api.getPlaylistDetail({id:this.props.playlist.id})
     if(res.data.code == 200){
+      let arNames = ''
+
       this.setState({
         playlistDetail:{
           playlist:{
             tracks: res.data.playlist.tracks.map(item => { 
-              return { ar: item.ar, id: item.id, name: item.name, al: item.al}
+              arNames = item && item.ar && item.ar.map(ar => ar.name).join('、') || ''
+
+              return { ar: item.ar, id: item.id, name: item.name, al: item.al,arNames}
              })
           }
         }
       },() => {
         this.initPage()
       })
-    }
-  }
-  _contentViewScroll(e) {
-    var offsetY = e.nativeEvent.contentOffset.y; //滑动距离
-    var contentSizeHeight = e.nativeEvent.contentSize.height; //scrollView contentSize高度
-    var oriageScrollHeight = e.nativeEvent.layoutMeasurement.height; //scrollView高度
-    if (offsetY + oriageScrollHeight >= contentSizeHeight) {
-      this.nextPage()
     }
   }
 
@@ -91,25 +87,20 @@ export default class Favorite extends React.Component {
   }
 
   render(){
-    let arNames = ''
     let currentSong = this.props.store.player.playingIndex?this.props.store.player.playlist[this.props.store.player.playingIndex]:null
     return (
-      <ScrollView
-        onMomentumScrollEnd={(e) => this._contentViewScroll(e)}>
-        {
-          // 这种性能应该不高
-          this.state.renderList.map((item,index) => {
-            arNames = item && item.ar && item.ar.map(ar => ar.name).join('、') || ''
-            return item ? <ListItem
-              style={currentSong && currentSong.id == item.id?{backgroundColor:'#f5f5f5'}:{}}
-              key={item.id}
-              onPress={() => this.toPlaying(index)}
-              title={item.name}
-              description={`${item.al.name} ${arNames}`}
-            />:null
-          })
-        }
-      </ScrollView>
+      this.state.renderList.length?<FlatList
+        onEndReached={() => this.nextPage()}
+        data={this.state.renderList}
+        renderItem={({item,index}) => {
+        return <ListItem
+          style={currentSong && currentSong.id == item.id ? { backgroundColor: '#f5f5f5' } : {}}
+          key={item.id}
+          onPress={() => this.toPlaying(index)}
+          title={item.name}
+          description={`${item.al.name} ${item.arNames}`}
+        />}}>
+      </FlatList>:null
     )
   }
 }
