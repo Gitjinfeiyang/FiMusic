@@ -13,7 +13,7 @@
     "@react-native-community/blur": "^3.6.0",
     "@ui-kitten/components": "^5.0.0-alpha.1",
     "@ui-kitten/eva-icons": "^4.4.1",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "expo": "~37.0.3",
     "expo-av": "^8.1.0",
     "expo-updates": "~0.1.0",
